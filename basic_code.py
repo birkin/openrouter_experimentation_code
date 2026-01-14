@@ -13,9 +13,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+## envars -----------------------------------------------------------
 OPENROUTER_API_KEY: str = os.environ['OPENROUTER_API_KEY']
 OPENROUTER_MODEL: str = os.environ['OPENROUTER_MODEL']
+OPENROUTER_PROMPT_FILE: str = os.environ['OPENROUTER_PROMPT_FILE']
 
+## load prompt --------------------------------------------------------
+with open(OPENROUTER_PROMPT_FILE, 'r') as f:
+    prompt: str = f.read()
+
+## call API -----------------------------------------------------------
 start_time: datetime.datetime = datetime.datetime.now()
 response: requests.Response = requests.post(
     url='https://openrouter.ai/api/v1/chat/completions',
@@ -27,7 +34,8 @@ response: requests.Response = requests.post(
     data=json.dumps(
         {
             'model': OPENROUTER_MODEL,  # Optional
-            'messages': [{'role': 'user', 'content': 'What is the meaning of life?'}],
+            'transforms': ['middle-out'],
+            'messages': [{'role': 'user', 'content': prompt}],
         }
     ),
 )
