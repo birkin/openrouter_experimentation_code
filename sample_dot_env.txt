@@ -1,0 +1,11 @@
+# OpenRouter API Configuration
+# Replace with your actual API key from https://openrouter.ai/
+OPENROUTER_API_KEY="sk-or-v1-your-api-key-here"
+
+# Model to use for OpenRouter requests
+# Examples: "anthropic/claude-3-haiku", "openai/gpt-4", "google/gemini-pro"
+OPENROUTER_MODEL="google/gemma-3-27b-it:free"
+
+# Path to the prompt file containing the system prompt or instructions
+# This should be a JSON file with the prompt structure expected by your application
+OPENROUTER_PROMPT_FILE="/path/to/your/prompts/the_prompt.md"
