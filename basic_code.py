@@ -6,7 +6,7 @@ import json
 import os
 from typing import Any
 
-import requests
+import httpx
 
 ## load the API key from the .env file
 from dotenv import load_dotenv
@@ -24,7 +24,7 @@ with open(OPENROUTER_PROMPT_FILE, 'r') as f:
 
 ## call API -----------------------------------------------------------
 start_time: datetime.datetime = datetime.datetime.now()
-response: requests.Response = requests.post(
+response: httpx.Response = httpx.post(
     url='https://openrouter.ai/api/v1/chat/completions',
     headers={
         'Authorization': f'Bearer {OPENROUTER_API_KEY}',
