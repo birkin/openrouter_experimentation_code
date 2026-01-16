@@ -1,6 +1,5 @@
 ## from <https://openrouter.ai/docs/quickstart#using-the-openrouter-api-directly>
 
-
 import datetime
 import json
 import os
@@ -11,41 +10,59 @@ import httpx
 ## load the API key from the .env file
 from dotenv import load_dotenv
 
-load_dotenv()
 
-## envars -----------------------------------------------------------
-OPENROUTER_API_KEY: str = os.environ['OPENROUTER_API_KEY']
-OPENROUTER_MODEL: str = os.environ['OPENROUTER_MODEL']
-OPENROUTER_PROMPT_FILE: str = os.environ['OPENROUTER_PROMPT_FILE']
+def load_config() -> tuple[str, str, str]:
+    ## envars -----------------------------------------------------------
+    load_dotenv()
+    openrouter_api_key: str = os.environ['OPENROUTER_API_KEY']
+    openrouter_model: str = os.environ['OPENROUTER_MODEL']
+    openrouter_prompt_file: str = os.environ['OPENROUTER_PROMPT_FILE']
+    return openrouter_api_key, openrouter_model, openrouter_prompt_file
 
-## load prompt --------------------------------------------------------
-with open(OPENROUTER_PROMPT_FILE, 'r') as f:
-    prompt: str = f.read()
 
-## call API -----------------------------------------------------------
-start_time: datetime.datetime = datetime.datetime.now()
-response: httpx.Response = httpx.post(
-    url='https://openrouter.ai/api/v1/chat/completions',
-    headers={
-        'Authorization': f'Bearer {OPENROUTER_API_KEY}',
-        # 'HTTP-Referer': '<YOUR_SITE_URL>',  # Optional. Site URL for rankings on openrouter.ai.
-        # 'X-Title': '<YOUR_SITE_NAME>',  # Optional. Site title for rankings on openrouter.ai.
-    },
-    data=json.dumps(
-        {
-            'model': OPENROUTER_MODEL,  # Optional
-            'transforms': ['middle-out'],
-            'messages': [{'role': 'user', 'content': prompt}],
-        }
-    ),
-)
+def load_prompt(prompt_file: str) -> str:
+    ## load prompt --------------------------------------------------------
+    with open(prompt_file, 'r') as f:
+        prompt: str = f.read()
+    return prompt
 
-## output -----------------------------------------------------------
 
-jsn: dict[str, Any] = response.json()
-print(json.dumps(jsn, indent=2))
+def call_openrouter(api_key: str, model: str, prompt: str) -> dict[str, Any]:
+    ## call API -----------------------------------------------------------
+    response: httpx.Response = httpx.post(
+        url='https://openrouter.ai/api/v1/chat/completions',
+        headers={
+            'Authorization': f'Bearer {api_key}',
+            # 'HTTP-Referer': '<YOUR_SITE_URL>',  # Optional. Site URL for rankings on openrouter.ai.
+            # 'X-Title': '<YOUR_SITE_NAME>',  # Optional. Site title for rankings on openrouter.ai.
+        },
+        data=json.dumps(
+            {
+                'model': model,  # Optional
+                'transforms': ['middle-out'],
+                'messages': [{'role': 'user', 'content': prompt}],
+            }
+        ),
+    )
 
-print('\n\n')
+    jsn: dict[str, Any] = response.json()
+    return jsn
 
-time_taken: datetime.timedelta = datetime.datetime.now() - start_time
-print(f'time taken, ``{time_taken}``')
+
+def main() -> None:
+    openrouter_api_key, openrouter_model, openrouter_prompt_file = load_config()
+    prompt: str = load_prompt(openrouter_prompt_file)
+
+    start_time: datetime.datetime = datetime.datetime.now()
+    jsn: dict[str, Any] = call_openrouter(openrouter_api_key, openrouter_model, prompt)
+
+    ## output -----------------------------------------------------------
+    print(json.dumps(jsn, indent=2))
+    print('\n\n')
+
+    time_taken: datetime.timedelta = datetime.datetime.now() - start_time
+    print(f'time taken, ``{time_taken}``')
+
+
+if __name__ == '__main__':
+    main()
