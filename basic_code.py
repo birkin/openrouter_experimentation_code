@@ -12,7 +12,10 @@ from dotenv import load_dotenv
 
 
 def load_config() -> tuple[str, str, str]:
-    ## envars -----------------------------------------------------------
+    """
+    Loads the OpenRouter API key, model, and prompt file from the environment.
+    Called by main().
+    """
     load_dotenv()
     openrouter_api_key: str = os.environ['OPENROUTER_API_KEY']
     openrouter_model: str = os.environ['OPENROUTER_MODEL']
@@ -21,14 +24,20 @@ def load_config() -> tuple[str, str, str]:
 
 
 def load_prompt(prompt_file: str) -> str:
-    ## load prompt --------------------------------------------------------
+    """
+    Loads the prompt from the file.
+    Called by main().
+    """
     with open(prompt_file, 'r') as f:
         prompt: str = f.read()
     return prompt
 
 
 def call_openrouter(api_key: str, model: str, prompt: str) -> dict[str, Any]:
-    ## call API -----------------------------------------------------------
+    """
+    Calls the OpenRouter API.
+    Called by main().
+    """
     response: httpx.Response = httpx.post(
         url='https://openrouter.ai/api/v1/chat/completions',
         headers={
@@ -50,6 +59,9 @@ def call_openrouter(api_key: str, model: str, prompt: str) -> dict[str, Any]:
 
 
 def main() -> None:
+    """
+    Main controller function.
+    """
     openrouter_api_key, openrouter_model, openrouter_prompt_file = load_config()
     prompt: str = load_prompt(openrouter_prompt_file)
 
