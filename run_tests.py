@@ -7,6 +7,8 @@ Usage examples:
     (file) uv run ./run_tests.py -v tests.test_environment_checks
     (class) uv run ./run_tests.py -v tests.test_environment_checks.TestEnvironmentChecks
     (method) uv run ./run_tests.py -v tests.test_environment_checks.TestEnvironmentChecks.test_check_branch_non_main_raises
+
+Note: there are currently no unit-tests, so this'll show, appropriately, zero tests run.
 """
 
 import sys
